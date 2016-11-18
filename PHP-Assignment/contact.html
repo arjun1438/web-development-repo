@@ -1,0 +1,14 @@
+<br><br><br><br>
+<p>Write a PHP code that helps to send an email to the user on submitting the HTML form. Make sure you have tested on your localhost. The ‘TO’ address should be taken from the HTML Form and ‘FROM’ address should be your email id by default. The E-mail should be having the following message “Hello Everyone”.</p><br><br><br> 
+
+<form id="form" class="email-form">
+<div class="form-group row">
+    <div class="col-md-4"><label class="text-primary">Email:</label></div>
+    <div class="col-md-8"><input type="email" name="email" placeholder="Email..." class="form-control" id="email" required></div>
+</div>
+<div class="form-group row">
+    <div class="col-md-4"><label class="text-primary">Subject:</label></div>
+    <div class="col-md-8"><input type="text" name="subject" placeholder="Subject..." class="form-control" id="subject" required></div>
+</div>
+					<button id="submit" onClick="myFunction(event)" type="submit" class="btn btn-primary">Send message</button>
+</form>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Demo Site for ISSO</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+$('.nav navbar-nav li a').click(function(e) {
+  var $this = $(this);
+  if (!$this.hasClass('active')) {
+    $this.addClass('active');
+  }
+});
+
+
+$(document).ready( function() {
+    $("#q1").on("click", function() {
+        $("#content").load("contact.html");
+    });
+});
+
+$(document).ready( function() {
+    $("#q2").on("click", function() {
+        $("#content").load("form.html");
+    });
+});
+
+$(document).ready( function() {
+    $("#q3").on("click", function() {
+        $("#content").load("compute.html");
+    });
+});
+$(document).ready( function() {
+    $("#q4").on("click", function() {
+        $("#content").load("upload_new.php");
+    });
+});
+$(document).ready( function() {
+    $("#q5").on("click", function() {
+        $("#content").load("form_out.php");
+    });
+});
+$(document).ready( function() {
+    $("#q6").on("click", function() {
+        $("#content").load("image_output.php");
+    });
+});
+$(function() {
+   $(document).on('click', '.alert-close', function() {
+       $(this).parent().hide();
+   })
+});
+function myFunction(event)
+{
+	event.preventDefault();
+	var postData = $("#form").serialize();
+ 	var ajax = $.ajax(
+        {
+            url: "contact.php",
+            type: "POST",
+            data: postData,
+	    dataType: 'json'
+        })
+        .done(function(response){
+		$("#status").empty();
+		$("#status").addClass("alert alert-success alert-dismissible ");
+		$("#status").append(response["message"]);
+	        $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+		$("#status").show();
+		$("#content").children().remove();
+		
+        })
+        .fail(function(){
+		$("#status").addClass("alert alert-success alert-dismissible ");
+		$("#status").html("The email function failed");
+        });
+
+}
+
+function maxOfTwoFunction(event)
+{
+	var zipcode_regex = new RegExp("^[0-9,]+$");
+	 if(!zipcode_regex.test($("#compute").val()))
+                        {
+                            $("#status").empty();
+                            $("#status").addClass("alert alert-success alert-dismissible ");
+                            $("#status").append("Input should contain only digits, seperated by comma");
+                            $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+                            $("#status").show();
+                            return;
+                                
+                        }
+
+	event.preventDefault();
+	var values = $("#compute").val();
+        var store = values.split(',');
+	var rex = /\S/;
+	store = store.filter(rex.test.bind(rex));
+	var frequency = {}; 
+	var max = 0;  
+	var arr = [];
+	var result;   
+	for(var v in store) {
+        	frequency[store[v]]=(frequency[store[v]] || 0)+1;
+	}
+
+        for (prop in frequency) {
+        if (frequency.hasOwnProperty(prop)) {
+            arr.push({
+                'key': prop,
+                'value': frequency[prop]
+            });
+           }
+    	}
+    	
+	arr.sort(function(a, b) {
+            return a.value - b.value;
+    	});	
+
+	var max_freq = arr[arr.length-1]["value"];
+	result = arr[arr.length-1]["key"];
+	for(var element in arr)
+	{
+	   if(arr[element]["value"] < max_freq)
+	   {
+		result = arr[element]["key"];	
+           }
+	    
+	}
+	var str2 = "Array entered by user is "
+        var str1 = ". The element with second highest frequency is "
+	$("#status").empty();
+                $("#status").addClass("alert alert-success alert-dismissible ");
+                $("#status").append(str2.concat(store.toString()));
+                $("#status").append(str1.concat(result.toString()));
+                $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+                $("#status").show();
+		$("#content").children().remove();
+	
+}
+
+
+function formFunction(e) {
+		    e.preventDefault();
+                    var sel = $('#country').val();
+		    var name_regex = new RegExp("^[A-Z][a-z]{1,}$");
+		    var email_regex = new RegExp("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$");
+		    var zipcode_regex = new RegExp("^[0-9]{5,10}");
+		    var submit = true;		    			    
+
+                    if (sel == 'USA') {
+			
+			if(!name_regex.test($("#name").val()))
+		 	{
+			    $("#status").empty();
+			    $("#status").addClass("alert alert-success alert-dismissible ");
+			    $("#status").append("Minimun length of name is 2, only alpahbets allowed, begin with upper case");
+	        	    $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+			    $("#status").show();
+			    return;
+				
+			}
+
+			if(!email_regex.test($("#email").val()))
+		 	{
+			    $("#status").empty();
+			    $("#status").addClass("alert alert-success alert-dismissible ");
+			    $("#status").append("Enter email address of form someone@uh.edu");
+	        	    $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+			    $("#status").show();
+			    return;
+			}
+				
+			if(!zipcode_regex.test($("#zipcode").val()))
+		 	{
+			    $("#status").empty();
+			    $("#status").addClass("alert alert-success alert-dismissible ");
+			    $("#status").append("Zip code should contain only digits, min length 5 , max 10");
+	        	    $("#status").append('<button type="button" class="close alert-close">&times;</button>');
+			    $("#status").show();
+			    return;
+				
+			}
+				var postData = $("#contact-form").serialize();
+ 				var ajax = $.ajax(
+        			{
+            				url: "form.php",
+            				type: "POST",
+            				data: postData,
+	    				dataType: 'json'
+        			})
+        			.done(function(response){
+					$("#status").empty();
+					$("#status").addClass("alert alert-success alert-dismissible ");
+					$("#status").append(response["message"]);
+	        			$("#status").append('<button type="button" class="close alert-close">&times;</button>');
+					$("#status").show();
+					$("#content").children().remove();
+		
+        			})
+        			.fail(function(){
+					$("#status").addClass("alert alert-success alert-dismissible ");
+					$("#status").html("Storing into mysql failed");
+        			});
+				
+                    }
+		    else
+		    {
+			$("#status").empty();
+			$("#status").addClass("alert alert-success alert-dismissible ");
+			$("#status").append("You should fill all fields and select United States for country");
+	        	$("#status").append('<button type="button" class="close alert-close">&times;</button>');
+			$("#status").show();
+		    }
+}
+</script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+      <li><a id="q1" href="#">Question1</a></li>
+        <li><a id="q2" href="#">Question2</a></li>
+        <li><a id="q3" href="#">Question3</a></li>
+        <li><a id="q4" href="#">Question4</a></li>
+        <li><a id="q5" href="#">Form Data</a></li>
+        <li><a id="q6" href="#">Blob output</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div class="container-fluid text-center">
+  <div class="row content">
+      <h1 class="text-center">Welcome</h1>
+	 <div class="col-md-4 col-md-offset-4" id="status"></div>
+      <div class="col-md-4 col-md-offset-4" id="content">
+	</div>
+  </div>
+</div>
+</body>
+</html>
